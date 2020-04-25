@@ -10,7 +10,7 @@ const spotsController = require('./routes/SFspotsController');
 // mongoose.connect('mongodb://localhost/SFspotsDB', { useNewUrlParser: true })
 
 // string path to connect to remote database:
-const dataBase = process.env.DBuri;
+const dataBase = process.env.dburi;
 
 // remote database connection:
 mongoose.connect(dataBase, { useNewUrlParser: true })
@@ -27,11 +27,23 @@ server.use(helmet());
 server.use(express.json());
 
 // prevent CORS errors
-server.use(cors());
+server.use(cors({
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}));
+
+// const corsOptions = {
+//   origin: '*',
+//   credentials: true,
+// };
+
+// server.use(cors(corsOptions));
 
 // test api:
 server.get('/', (req, res) => {
-  res.json('API is running');
+  res.status(200).json('API is running');
 })
 
 server.use('/api/spots', spotsController);
