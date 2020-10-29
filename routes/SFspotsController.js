@@ -35,6 +35,7 @@ router.route('/')
   //   newSpot.author = req.user.name;
   //   const spot = new Spot(newSpot);
 
+
   //   spot.save()
   //     .then(spot => {
   //       res.status(201).json(spot);
@@ -49,7 +50,6 @@ router.route('/coffeelist')
     axios.get(
       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.790754,-122.451414&name=&keyword=quiet,study&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
       // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=41.3107513,69.287446&name=&keyword=coffee&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
-
     ).then(response => {
       res.json(response.data.results)
     })
