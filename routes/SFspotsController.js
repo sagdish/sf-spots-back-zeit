@@ -54,8 +54,10 @@ router.route('/libraries')
 
 router.route('/current')
   .get((req, res) => {
-    const {lat, lng} = req.query
-    // console.log(lat, lng);
+    // const {lat, lng} = req.query
+    const lat = req.query.lat;
+    const lng = req.query.lng;
+    console.log(lat, lng);
     axios.get(
         `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=quiet&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
         // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=coffee&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
