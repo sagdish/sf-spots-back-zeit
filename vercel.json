@@ -1,12 +1,31 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "*.js",
-      "use": "@now/node-server"
-    }
-  ],
+  "builds": [{ "src": "index.js", "use": "@now/node-server" }],
   "routes": [
-    { "src": "/api/spots", "methods": ["GET", "POST"], "dest": "./routes/SFspotsController.js"}
+    {
+      "src": "/",
+      "dest": "/index.js",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/api/spots",
+      "dest": "/index.js",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/api/spots/coffeelist",
+      "dest": "/index.js",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/api/spots/libraries",
+      "dest": "/index.js",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/api/spots/current",
+      "dest": "/index.js",
+      "methods": ["GET"]
+    }
   ]
 }
