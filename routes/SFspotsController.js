@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const axios = require('axios');
-const jwt = require('express-jwt')
-const jwksRsa = require('jwks-rsa');
+// const jwt = require('express-jwt')
+// const jwksRsa = require('jwks-rsa');
+const fs = require('fs')
 
 const Spot = require('../database/SFspotsModel');
 
@@ -46,7 +47,6 @@ router.route('/')
 router.route('/coffeelist')
   .get((req, res) => {
     axios.get(
-      // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.790754,-122.451414&name=&keyword=study,quiet&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.790754,-122.451414&name=&keyword=quiet,study&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
       // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=41.3107513,69.287446&name=&keyword=coffee&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
 
@@ -67,10 +67,10 @@ router.route('/libraries')
 router.route('/current')
   .get((req, res) => {
     const {lat, lng} = req.query
-    console.log(lat, lng);
+    // console.log(lat, lng);
     axios.get(
-        // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=study,quiet&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=coffee&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=quiet&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
+        // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=coffee&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
       ).then(response => {
           // console.log('gmaps response: ', response.data)
           // res.status(200).json(response.data.results)
@@ -81,29 +81,32 @@ router.route('/current')
 
 router.route('/photo')
   .get((req, res) => {
-    axios({
-      method: 'get',
-      url: 'http://bit.ly/2mTM3nY',
-      responseType: 'stream'
+    const { photoreference } = req.query;
+    // console.log(photoreference)
+    axios.get(
+      `https://maps.googleapis.com/maps/api/place/photo?key=${process.env.gmapsapi}&photoreference=${photoreference}&maxheight=300`
+    )
+    .then(response => {
+      res.send(response.request.res.responseUrl)
     })
-      .then(function (response) {
-        response.data.pipe(fs.createWriteStream('ada_lovelace.jpg'))
-      });
-  })
+    .catch(err => res.status(500).json({ error: err }));
+  });
 
   // .get((req, res) => {
-  //   axios.get(
-  //     `https://maps.googleapis.com/maps/api/place/photo?key=AIzaSyBteViGo-N3uCUN2NWHlAnPg1ow8hOoplk&photoreference=CmRaAAAAatRnbGQcNn2Lu23dL30yedDqUaFslwk0vHeUkB5Uuypn-MsrBFIiyTWYRZpS6eSPXwJ1OaXquTIZ4Wc6_WDiRRw8YUKnxKHt30374R8QLGbrIJUhetIDHOOWncnPyeo3EhDXQpkhWC9y3NNERenNFTMsGhSzAcuWrTo-sqAy7VdD4VSZfsg8Rw&maxheight=500`, {
-  //     responseType: 'arraybuffer'
+  //   axios({
+  //     method: 'get',
+  //     url: 'http://bit.ly/2mTM3nY',
+  //     responseType: 'json'
   //   })
-  //   .then(response => Buffer.from(response.data, 'binary').toString('base64'))
-  //   .catch(err => res.status(500).json({ error: err }));
+  //     .then(function (response) {
+  //       // console.log(response.request.res.responseUrl);
+  //       console.log(response.request.res.responseUrl);
+  //       // res.send( response.data.request.res )
+  //       res.send('check')
+  //       // res.response.data.pipe(fs.createWriteStream('ada_lovelace.jpg')) 
+  //     })
+  //     .catch(err => res.send({ error: err }));
 
   // })
 
 module.exports = router;
-
-// .get('https://maps.googleapis.com/maps/api/place/photo?key=AIzaSyBteViGo-N3uCUN2NWHlAnPg1ow8hOoplk&photoreference=CmRaAAAAatRnbGQcNn2Lu23dL30yedDqUaFslwk0vHeUkB5Uuypn-MsrBFIiyTWYRZpS6eSPXwJ1OaXquTIZ4Wc6_WDiRRw8YUKnxKHt30374R8QLGbrIJUhetIDHOOWncnPyeo3EhDXQpkhWC9y3NNERenNFTMsGhSzAcuWrTo-sqAy7VdD4VSZfsg8Rw&maxheight=500', {
-//   responseType: 'arraybuffer'
-// })
-// .then(response => Buffer.from(response.data, 'binary').toString('base64'))
