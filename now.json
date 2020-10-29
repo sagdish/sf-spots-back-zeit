@@ -5,5 +5,9 @@
       "src": "*.js",
       "use": "@now/node-server"
     }
+  ],
+  "routes": [
+    { "src": "/api/spots", "dest": "/routes/SFspotsController.js"},
+    { "src": "/users", "methods": ["POST"], "dest": "/users-api.js" }
   ]
 }
