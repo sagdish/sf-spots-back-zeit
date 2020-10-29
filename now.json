@@ -7,7 +7,7 @@
     }
   ],
   "routes": [
-    { "src": "/api/spots", "dest": "/routes/SFspotsController.js"},
+    { "src": "/api/spots", "methods": ["GET", "POST"], "dest": "/routes/SFspotsController.js"},
     { "src": "/users", "methods": ["POST"], "dest": "/users-api.js" }
   ]
 }
