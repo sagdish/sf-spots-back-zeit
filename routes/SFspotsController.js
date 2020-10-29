@@ -8,18 +8,6 @@ const Spot = require('../database/SFspotsModel');
 
 // console.log('spot model: ', Spot);
 
-// const checkJwt = jwt({
-//   secret: jwksRsa.expressJwtSecret({
-//     cache: true,
-//     rateLimit: true,
-//     jwksRequestsPerMinute: 5,
-//     jwksUri: `https://sagdi.auth0.com/.well-known/jwks.json`
-//   }), 
-//   audience: 'ZtCjLTpzf42UPGax1r5PwtptTP8JwMwA',
-//   issuer: 'https://sagdi.auth0.com/',
-//   algorithms: ['RS256']
-// });
-
 router.route('/')
   .get((req, res) => {
     Spot.find()
