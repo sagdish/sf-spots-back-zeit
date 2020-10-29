@@ -1,23 +1,24 @@
 const router = require('express').Router();
 const axios = require('axios');
-const jwt = require('express-jwt')
-const jwksRsa = require('jwks-rsa');
+// const jwt = require('express-jwt')
+// const jwksRsa = require('jwks-rsa');
+const fs = require('fs')
 
 const Spot = require('../database/SFspotsModel');
 
 // console.log('spot model: ', Spot);
 
-const checkJwt = jwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: `https://sagdi.auth0.com/.well-known/jwks.json`
-  }), 
-  audience: 'ZtCjLTpzf42UPGax1r5PwtptTP8JwMwA',
-  issuer: 'https://sagdi.auth0.com/',
-  algorithms: ['RS256']
-});
+// const checkJwt = jwt({
+//   secret: jwksRsa.expressJwtSecret({
+//     cache: true,
+//     rateLimit: true,
+//     jwksRequestsPerMinute: 5,
+//     jwksUri: `https://sagdi.auth0.com/.well-known/jwks.json`
+//   }), 
+//   audience: 'ZtCjLTpzf42UPGax1r5PwtptTP8JwMwA',
+//   issuer: 'https://sagdi.auth0.com/',
+//   algorithms: ['RS256']
+// });
 
 router.route('/')
   .get((req, res) => {
@@ -29,27 +30,26 @@ router.route('/')
         res.status(500).json({ error: err });
       });
   })
-  .post(checkJwt, (req, res) => {
-    const newSpot = req.body;
-    newSpot.author = req.user.name;
-    const spot = new Spot(newSpot);
+  // .post(checkJwt, (req, res) => {
+  //   const newSpot = req.body;
+  //   newSpot.author = req.user.name;
+  //   const spot = new Spot(newSpot);
 
-    spot.save()
-      .then(spot => {
-        res.status(201).json(spot);
-      })
-      .catch(err => {
-        res.status(500).json({ error: err });
-      });
-  });
+
+  //   spot.save()
+  //     .then(spot => {
+  //       res.status(201).json(spot);
+  //     })
+  //     .catch(err => {
+  //       res.status(500).json({ error: err });
+  //     });
+  // });
 
 router.route('/coffeelist')
   .get((req, res) => {
     axios.get(
-      // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.790754,-122.451414&name=&keyword=study,quiet&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.790754,-122.451414&name=&keyword=quiet,study&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
       // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=41.3107513,69.287446&name=&keyword=coffee&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
-
     ).then(response => {
       res.json(response.data.results)
     })
@@ -67,10 +67,10 @@ router.route('/libraries')
 router.route('/current')
   .get((req, res) => {
     const {lat, lng} = req.query
-    console.log(lat, lng);
+    // console.log(lat, lng);
     axios.get(
-        // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=study,quiet&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=coffee&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=quiet&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
+        // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&name=&keyword=coffee&rankby=distance&key=${process.env.gmapsapi}&type=cafe`
       ).then(response => {
           // console.log('gmaps response: ', response.data)
           // res.status(200).json(response.data.results)
@@ -78,5 +78,35 @@ router.route('/current')
         })
         .catch(err => res.status(500).json({ error: err }));
   })
+
+router.route('/photo')
+  .get((req, res) => {
+    const { photoreference } = req.query;
+    // console.log(photoreference)
+    axios.get(
+      `https://maps.googleapis.com/maps/api/place/photo?key=${process.env.gmapsapi}&photoreference=${photoreference}&maxheight=300`
+    )
+    .then(response => {
+      res.send(response.request.res.responseUrl)
+    })
+    .catch(err => res.status(500).json({ error: err }));
+  });
+
+  // .get((req, res) => {
+  //   axios({
+  //     method: 'get',
+  //     url: 'http://bit.ly/2mTM3nY',
+  //     responseType: 'json'
+  //   })
+  //     .then(function (response) {
+  //       // console.log(response.request.res.responseUrl);
+  //       console.log(response.request.res.responseUrl);
+  //       // res.send( response.data.request.res )
+  //       res.send('check')
+  //       // res.response.data.pipe(fs.createWriteStream('ada_lovelace.jpg')) 
+  //     })
+  //     .catch(err => res.send({ error: err }));
+
+  // })
 
 module.exports = router;

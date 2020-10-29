@@ -27,19 +27,19 @@ server.use(helmet());
 server.use(express.json());
 
 // prevent CORS errors
-// server.use(cors({
-//   origin: "*",
-//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   preflightContinue: false,
-//   optionsSuccessStatus: 204
-// }));
+server.use(cors({
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}));
 
-const corsOptions = {
-  origin: '*',
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: '*',
+//   credentials: true,
+// };
 
-server.use(cors(corsOptions));
+// server.use(cors(corsOptions));
 
 // test api:
 server.get('/', (req, res) => {
