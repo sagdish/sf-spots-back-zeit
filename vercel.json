@@ -26,6 +26,11 @@
       "src": "/api/spots/current",
       "dest": "/index.js",
       "methods": ["GET"]
+    },
+    {
+      "src": "/api/spots/photo",
+      "dest": "/index.js",
+      "methods": ["GET"]
     }
   ]
 }
